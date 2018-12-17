@@ -51,6 +51,7 @@ describe('interface-ipfs-core tests', () => {
   })
 
   tests.filesRegular(defaultCommonFactory, {
+    only: ['addFromFs'],
     skip: isNode ? null : [{
       name: 'addFromStream',
       reason: 'Not designed to run in the browser'
