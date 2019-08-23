@@ -44,7 +44,7 @@ function isPong (pingResponse) {
   return Boolean(pingResponse && pingResponse.success && !pingResponse.text)
 }
 
-describe('ping', function () {
+describe.only('ping', function () {
   this.timeout(60 * 1000)
 
   if (!isNode) return
