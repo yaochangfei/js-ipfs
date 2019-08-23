@@ -82,11 +82,13 @@ describe.only('ping', function () {
     after(async () => {
       if (!ipfsdA) return
       await ipfsdA.stop()
+      console.log('SUCCESSFULLY STOPPED IPFS A')
     })
 
     after(async () => {
       if (!ipfsdB) return
       await ipfsdB.stop()
+      console.log('SUCCESSFULLY STOPPED IPFS B')
     })
 
     it('can ping via a promise without options', async () => {
