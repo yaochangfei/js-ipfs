@@ -33,7 +33,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
-    "cids": "^0.7.3",
+    "cids": "^0.8.0",
     "delay": "^4.3.0",
     "dirty-chai": "^2.0.1",
     "ipfs-block": "^0.8.1",
@@ -57,7 +57,7 @@
     "temp-write": "^4.0.0"
   },
   "devDependencies": {
-    "aegir": "21.3.0",
+    "aegir": "21.4.4",
     "ipfsd-ctl": "^3.0.0"
   },
   "contributors": [
