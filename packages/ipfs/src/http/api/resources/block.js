@@ -60,7 +60,8 @@ exports.put = {
       format: Joi.string().valid(...Object.keys(codecs)),
       mhtype: Joi.string().valid(...Object.keys(multihash.names)),
       mhlen: Joi.number().default(-1),
-      pin: Joi.bool().default(false)
+      pin: Joi.bool().default(false),
+      preload: Joi.bool().default(false)
     }).unknown()
   },
 
@@ -97,7 +98,9 @@ exports.put = {
       block = await ipfs.block.put(data, {
         mhtype: request.query.mhtype,
         format: request.query.format,
-        version: request.query.version && parseInt(request.query.version)
+        version: request.query.version && parseInt(request.query.version),
+        pin: request.query.pin,
+        preload: request.query.preload
       })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to put block' })

@@ -49,10 +49,12 @@ and `options` is an Object that can contain the following properties:
   - Buffer, the raw Buffer of the cid
   - CID, a CID instance
   - String, the base58 encoded version of the multihash
-- format
-- mhtype
+- format (String): The codec to use (default: 'dag-pb')
+- mhtype (String): The multihash type (default: 'sha2-256')
 - mhlen
-- version
+- version (Number): The CID version (default: 0)
+- pin (boolean, default: false): If true the block will be pinned after adding
+- preload (boolean, default: false): If true the block will be preloaded after adding
 
 if no options are passed, it defaults to `{ format: 'dag-pb', mhtype: 'sha2-256', version: 0 }`
 

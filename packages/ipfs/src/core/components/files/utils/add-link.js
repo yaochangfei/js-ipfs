@@ -54,13 +54,13 @@ const addLink = async (context, options) => {
   const meta = UnixFS.unmarshal(options.parent.Data)
 
   if (meta.type === 'hamt-sharded-directory') {
-    log('Adding link to sharded directory')
+    log(`Adding link ${options.name} (${options.cid}) to sharded directory`)
 
     return addToShardedDirectory(context, options)
   }
 
   if (options.parent.Links.length >= options.shardSplitThreshold) {
-    log('Converting directory to sharded directory')
+    log(`Converting regular directory to sharded directory before adding ${options.name} (${options.cid})`)
 
     return convertToShardedDirectory(context, {
       ...options,
@@ -124,7 +124,7 @@ const addToShardedDirectory = async (context, options) => {
     shard, path
   } = await addFileToShardedDirectory(context, options)
 
-  const result = await last(shard.flush('', context.ipld))
+  const result = await last(shard.flush('', context.block))
   const node = await context.ipld.get(result.cid)
 
   // we have written out the shard, but only one sub-shard will have been written so replace it in the original shard

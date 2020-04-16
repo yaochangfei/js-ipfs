@@ -92,6 +92,28 @@ module.exports = (http) => {
         expect(res.statusCode).to.equal(400)
         expect(res.result.Message).to.include('Invalid request query input')
       })
+
+      it('should pass only-hash argument', async () => {
+        const form = new FormData()
+        const filePath = 'test/fixtures/test-data/hello'
+        form.append('data', fs.createReadStream(filePath))
+        const headers = form.getHeaders()
+        const expectedResult = {
+          Key: 'QmZjTnYw2TFhn9Nn7tjmPSoTBoY7YRkwPzwSrSbabY24Kp',
+          Size: 12
+        }
+
+        const payload = await streamToPromise(form)
+        const res = await api.inject({
+          method: 'POST',
+          url: '/api/v0/block/put?only-hash=true',
+          headers,
+          payload
+        })
+
+        expect(res.statusCode).to.equal(200)
+        expect(res.result).to.deep.equal(expectedResult)
+      })
     })
 
     describe('/block/get', () => {

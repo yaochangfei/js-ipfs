@@ -71,29 +71,23 @@ module.exports = ({
 
     blockService.setExchange(bitswap)
 
-    const files = Components.files({ ipld, blockService, repo, preload, options: constructorOptions })
-    const mfsPreload = createMfsPreload({ files, preload, options: constructorOptions.preload })
-
     await Promise.all([
       ipns.republisher.start(),
-      preload.start(),
-      mfsPreload.start()
+      preload.start()
     ])
 
-    const api = createApi({
+    const api = await createApi({
       apiManager,
       bitswap,
       blockService,
       config,
       constructorOptions,
-      files,
       gcLock,
       initOptions,
       ipld,
       ipns,
       keychain,
       libp2p,
-      mfsPreload,
       peerInfo,
       pinManager,
       preload,
@@ -112,20 +106,18 @@ module.exports = ({
   return apiManager.api
 }
 
-function createApi ({
+async function createApi ({
   apiManager,
   bitswap,
   blockService,
   config,
   constructorOptions,
-  files,
   gcLock,
   initOptions,
   ipld,
   ipns,
   keychain,
   libp2p,
-  mfsPreload,
   peerInfo,
   pinManager,
   preload,
@@ -158,8 +150,19 @@ function createApi ({
   }
   // FIXME: resolve this circular dependency
   dag.put = Components.dag.put({ ipld, pin, gcLock, preload })
-  const add = Components.add({ ipld, preload, pin, gcLock, options: constructorOptions })
+  const block = {
+    get: Components.block.get({ blockService, preload }),
+    put: Components.block.put({ blockService, gcLock, pin, preload }),
+    rm: Components.block.rm({ blockService, gcLock, pinManager }),
+    stat: Components.block.stat({ blockService, preload })
+  }
+  const add = Components.add({ block, preload, pin, gcLock, options: constructorOptions })
   const isOnline = Components.isOnline({ libp2p })
+
+  const files = Components.files({ ipld, block, blockService, repo, preload, options: constructorOptions })
+  const mfsPreload = createMfsPreload({ files, preload, options: constructorOptions.preload })
+
+  await mfsPreload.start()
 
   const dhtNotEnabled = async () => { // eslint-disable-line require-await
     throw new NotEnabledError('dht not enabled')
@@ -209,12 +212,7 @@ function createApi ({
       unwant: Components.bitswap.unwant({ bitswap }),
       wantlist: Components.bitswap.wantlist({ bitswap })
     },
-    block: {
-      get: Components.block.get({ blockService, preload }),
-      put: Components.block.put({ blockService, gcLock, preload }),
-      rm: Components.block.rm({ blockService, gcLock, pinManager }),
-      stat: Components.block.stat({ blockService, preload })
-    },
+    block,
     bootstrap: {
       add: Components.bootstrap.add({ repo }),
       list: Components.bootstrap.list({ repo }),

@@ -5,6 +5,7 @@ const Block = require('ipfs-block')
 const multihash = require('multihashes')
 const CID = require('cids')
 const { getDescribe, getIt, expect } = require('../utils/mocha')
+const all = require('it-all')
 
 /** @typedef { import("ipfsd-ctl/src/factory") } Factory */
 /**
@@ -79,6 +80,19 @@ module.exports = (common, options) => {
 
       expect(block.data).to.eql(Buffer.from('blorb'))
       expect(block.cid.multihash).to.eql(multihash.fromB58String(expectedHash))
+    })
+
+    it('should pin a block', async () => {
+      const { cid: cid1 } = await ipfs.block.put(Buffer.from(`now-${Date.now()}`, {
+        format: 'raw'
+      }))
+      await expect(all(ipfs.pin.ls(cid1))).to.eventually.be.rejectedWith(/is not pinned/)
+
+      const { cid: cid2 } = await ipfs.block.put(Buffer.from(`now-${Date.now()}`), {
+        format: 'raw',
+        pin: true
+      })
+      await expect(all(ipfs.pin.ls(cid2))).to.eventually.have.lengthOf(1)
     })
 
     it('should error with array of blocks', () => {

@@ -45,6 +45,20 @@ describe('block', () => {
     })
   })
 
+  it('put with only-hash', async () => {
+    const cid = 'bagiacgzarkhijr4xmbp345ovwwxra7kcecrnwcwtl7lg3g7d2ogyprdswjwq'
+    ipfs.block.put.resolves({
+      cid: new CID(cid)
+    })
+
+    const out = await cli('block put --only-hash test/fixtures/test-data/eth-block', { ipfs })
+    expect(out).to.eql(`${cid}\n`)
+
+    expect(ipfs.block.put.getCall(0).args[1]).to.deep.include({
+      onlyHash: true
+    })
+  })
+
   it('should put and print CID encoded in specified base', async () => {
     const cid = 'mAXASIKlIkE8vD0ebj4GXaUswGEsNLtHBzSoewPuF0pmhkqRH'
     ipfs.block.put.resolves({

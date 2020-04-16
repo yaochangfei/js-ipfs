@@ -5,7 +5,7 @@ const multihashing = require('multihashing-async')
 const CID = require('cids')
 const isIPFS = require('is-ipfs')
 
-module.exports = ({ blockService, gcLock, preload }) => {
+module.exports = ({ blockService, pin, gcLock, preload }) => {
   return async function put (block, options) {
     options = options || {}
 
@@ -39,6 +39,12 @@ module.exports = ({ blockService, gcLock, preload }) => {
 
     try {
       await blockService.put(block)
+
+      if (options.pin) {
+        await pin.add(block.cid, {
+          lock: false
+        })
+      }
 
       if (options.preload !== false) {
         preload(block.cid)
