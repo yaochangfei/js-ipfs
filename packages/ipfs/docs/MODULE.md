@@ -74,7 +74,7 @@ const node = await IPFS.create({ repo: '/var/ipfs/data' })
 
 | Type | Default |
 |------|---------|
-| boolean | `true` |
+| `boolean` | `true` |
 
 `js-ipfs` comes bundled with a tool that automatically migrates your IPFS repository when a new version is available.
 
@@ -112,7 +112,7 @@ Instead of a boolean, you may provide an object with custom initialization optio
 
 | Type | Default |
 |------|---------|
-| boolean | `true` |
+| `boolean` | `true` |
 
  If `false`, do not automatically start the IPFS node. Instead, you’ll need to manually call [`node.start()`](#nodestart) yourself.
 
