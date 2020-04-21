@@ -40,7 +40,7 @@ function getLibp2pOptions ({ options, config, datastore, peerInfo }) {
 
   const libp2pDefaults = {
     datastore,
-    peerInfo,
+    peerId: peerInfo.id,
     modules: {}
   }
 
@@ -80,6 +80,9 @@ function getLibp2pOptions ({ options, config, datastore, peerInfo }) {
         enabled: get(options, 'config.Pubsub.Enabled',
           get(config, 'Pubsub.Enabled', true))
       }
+    },
+    addresses: {
+      listen: peerInfo.multiaddrs.toArray()
     },
     connectionManager: get(options, 'connectionManager', {
       maxConnections: get(options, 'config.Swarm.ConnMgr.HighWater',

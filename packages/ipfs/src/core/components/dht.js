@@ -75,10 +75,10 @@ module.exports = ({ libp2p, repo }) => {
         options.maxNumProviders = options.numProviders
       }
 
-      for await (const peerInfo of libp2p._dht.findProviders(key, options)) {
+      for await (const peerData of libp2p._dht.findProviders(key, options)) {
         yield {
-          id: peerInfo.id.toB58String(),
-          addrs: peerInfo.multiaddrs.toArray()
+          id: peerData.id.toB58String(),
+          addrs: peerData.addrs
         }
       }
     },
@@ -94,11 +94,11 @@ module.exports = ({ libp2p, repo }) => {
         peerId = PeerId.createFromCID(peerId)
       }
 
-      const peerInfo = await libp2p._dht.findPeer(peerId)
+      const peerData = await libp2p._dht.findPeer(peerId)
 
       return {
-        id: peerInfo.id.toB58String(),
-        addrs: peerInfo.multiaddrs.toArray()
+        id: peerData.id.toB58String(),
+        addrs: peerData.addrs
       }
     },
 
