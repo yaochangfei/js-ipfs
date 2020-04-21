@@ -17,7 +17,9 @@ exports.wantlist = {
     const peerId = request.query.peer
     const cidBase = request.query['cid-base']
 
-    const list = await ipfs.bitswap.wantlist(peerId)
+    const list = await ipfs.bitswap.wantlist(peerId, {
+      signal: request.app.signal
+    })
 
     return h.response({
       Keys: list.map(cid => ({
@@ -38,7 +40,9 @@ exports.stat = {
     const { ipfs } = request.server.app
     const cidBase = request.query['cid-base']
 
-    const stats = await ipfs.bitswap.stat()
+    const stats = await ipfs.bitswap.stat({
+      signal: request.app.signal
+    })
 
     stats.wantlist = stats.wantlist.map(cid => ({
       '/': cidToString(cid, { base: cidBase, upgrade: false })
@@ -72,7 +76,9 @@ exports.unwant = {
   async handler (request, h) {
     const key = request.pre.args.key
     const { ipfs } = request.server.app
-    await ipfs.bitswap.unwant(key)
+    await ipfs.bitswap.unwant(key, {
+      signal: request.app.signal
+    })
     return h.response({ key: cidToString(key, { base: request.query['cid-base'], upgrade: false }) })
   }
 }

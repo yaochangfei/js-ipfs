@@ -45,13 +45,17 @@ const mfsLs = {
 
     if (stream) {
       return streamResponse(request, h, () => pipe(
-        ipfs.files.ls(arg),
+        ipfs.files.ls(arg, {
+          signal: request.app.signal
+        }),
         source => map(source, (entry) => mapEntry(entry, { cidBase, long })),
         source => map(source, (entry) => JSON.stringify(entry) + '\n')
       ))
     }
 
-    const files = await all(ipfs.files.ls(arg))
+    const files = await all(ipfs.files.ls(arg, {
+      signal: request.app.signal
+    }))
 
     return h.response({
       Entries: files.map(entry => mapEntry(entry, { cidBase, long }))

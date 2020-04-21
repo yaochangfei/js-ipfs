@@ -27,7 +27,8 @@ module.exports = {
 
     const path = await request.server.app.ipfs.dns(arg, {
       recursive,
-      format
+      format,
+      signal: request.app.signal
     })
 
     return h.response({

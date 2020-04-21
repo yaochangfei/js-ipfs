@@ -21,7 +21,8 @@ const mfsCp = {
       flush,
       hashAlg,
       cidVersion,
-      shardSplitThreshold
+      shardSplitThreshold,
+      signal: request.app.signal
     })
 
     await ipfs.files.cp.apply(null, args)

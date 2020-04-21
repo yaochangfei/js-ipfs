@@ -30,14 +30,20 @@ exports.add = {
   async handler (request, h) {
     const { ipfs } = request.server.app
     const { addr, default: def } = request.pre.args
-    const list = await ipfs.bootstrap.add(addr && addr.toString(), { default: def })
+    const list = await ipfs.bootstrap.add(addr && addr.toString(), {
+      default: def,
+      signal: request.app.signal
+    })
     return h.response(list)
   }
 }
 
 exports.addDefault = async (request, h) => {
   const { ipfs } = request.server.app
-  const list = await ipfs.bootstrap.add(null, { default: true })
+  const list = await ipfs.bootstrap.add(null, {
+    default: true,
+    signal: request.app.signal
+  })
   return h.response(list)
 }
 
@@ -62,13 +68,19 @@ exports.rm = {
   async handler (request, h) {
     const { ipfs } = request.server.app
     const { addr, all } = request.pre.args
-    const list = await ipfs.bootstrap.rm(addr && addr.toString(), { all })
+    const list = await ipfs.bootstrap.rm(addr && addr.toString(), {
+      all,
+      signal: request.app.signal
+    })
     return h.response(list)
   }
 }
 
 exports.rmAll = async (request, h) => {
   const { ipfs } = request.server.app
-  const list = await ipfs.bootstrap.rm(null, { all: true })
+  const list = await ipfs.bootstrap.rm(null, {
+    all: true,
+    signal: request.app.signal
+  })
   return h.response(list)
 }

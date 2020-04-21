@@ -17,7 +17,8 @@ exports.bw = (request, h) => {
       peer: request.query.peer,
       proto: request.query.proto,
       poll: request.query.poll === 'true',
-      interval: request.query.interval || '1s'
+      interval: request.query.interval || '1s',
+      signal: request.app.signal
     }),
     map(stat => ({
       TotalIn: stat.totalIn,

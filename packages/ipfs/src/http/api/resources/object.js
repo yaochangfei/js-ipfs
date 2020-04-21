@@ -40,8 +40,12 @@ exports.new = {
 
     let cid, node
     try {
-      cid = await ipfs.object.new(template)
-      node = await ipfs.object.get(cid)
+      cid = await ipfs.object.new(template, {
+        signal: request.app.signal
+      })
+      node = await ipfs.object.get(cid, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to create object' })
     }
@@ -84,7 +88,8 @@ exports.get = {
     let node, cid
     try {
       node = await ipfs.object.get(key, {
-        enc
+        enc,
+        signal: request.app.signal
       })
       cid = await dagPB.util.cid(dagPB.util.serialize(node))
     } catch (err) {
@@ -165,7 +170,9 @@ exports.put = {
 
     let cid
     try {
-      cid = await ipfs.object.put(node)
+      cid = await ipfs.object.put(node, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to put node' })
     }
@@ -206,7 +213,9 @@ exports.stat = {
 
     let stats
     try {
-      stats = await ipfs.object.stat(key)
+      stats = await ipfs.object.stat(key, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to stat object' })
     }
@@ -228,7 +237,9 @@ exports.data = {
 
     let data
     try {
-      data = await ipfs.object.data(key)
+      data = await ipfs.object.data(key, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to get object data' })
     }
@@ -254,7 +265,9 @@ exports.links = {
     const response = {
       Hash: cidToString(key, { base: request.query['cid-base'], upgrade: false })
     }
-    const links = await ipfs.object.links(key)
+    const links = await ipfs.object.links(key, {
+      signal: request.app.signal
+    })
 
     if (links) {
       response.Links = links.map((l) => {
@@ -322,8 +335,12 @@ exports.patchAppendData = {
 
     let cid, node
     try {
-      cid = await ipfs.object.patch.appendData(key, data)
-      node = await ipfs.object.get(cid)
+      cid = await ipfs.object.patch.appendData(key, data, {
+        signal: request.app.signal
+      })
+      node = await ipfs.object.get(cid, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to append data to object' })
     }
@@ -364,8 +381,12 @@ exports.patchSetData = {
 
     let cid, node
     try {
-      cid = await ipfs.object.patch.setData(key, data)
-      node = await ipfs.object.get(cid)
+      cid = await ipfs.object.patch.setData(key, data, {
+        signal: request.app.signal
+      })
+      node = await ipfs.object.get(cid, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to set data on object' })
     }
@@ -430,9 +451,15 @@ exports.patchAddLink = {
 
     let node, cid
     try {
-      node = await ipfs.object.get(ref)
-      cid = await ipfs.object.patch.addLink(root, new DAGLink(name, node.size, ref))
-      node = await ipfs.object.get(cid)
+      node = await ipfs.object.get(ref, {
+        signal: request.app.signal
+      })
+      cid = await ipfs.object.patch.addLink(root, new DAGLink(name, node.size, ref), {
+        signal: request.app.signal
+      })
+      node = await ipfs.object.get(cid, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to add link to object' })
     }
@@ -493,9 +520,12 @@ exports.patchRmLink = {
     let cid, node
     try {
       cid = await ipfs.object.patch.rmLink(root, {
-        name: link
+        name: link,
+        signal: request.app.signal
       })
-      node = await ipfs.object.get(cid)
+      node = await ipfs.object.get(cid, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to remove link from object' })
     }

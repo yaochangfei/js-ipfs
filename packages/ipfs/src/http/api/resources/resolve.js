@@ -24,7 +24,8 @@ module.exports = {
     log(name, { recursive, cidBase })
     const res = await ipfs.resolve(name, {
       recursive,
-      cidBase
+      cidBase,
+      signal: request.app.signal
     })
 
     return h.response({ Path: res })

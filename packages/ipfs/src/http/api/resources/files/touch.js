@@ -23,7 +23,8 @@ const mfsTouch = {
       flush,
       shardSplitThreshold,
       cidVersion,
-      hashAlg
+      hashAlg,
+      signal: request.app.signal
     })
 
     return h.response()

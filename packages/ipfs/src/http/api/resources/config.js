@@ -64,7 +64,9 @@ exports.getOrSet = {
 
     let originalConfig
     try {
-      originalConfig = await ipfs.config.get()
+      originalConfig = await ipfs.config.get({
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to get config value' })
     }
@@ -82,7 +84,9 @@ exports.getOrSet = {
         throw Boom.badRequest('Failed to set config value')
       }
       try {
-        await ipfs.config.replace(originalConfig)
+        await ipfs.config.replace(originalConfig, {
+          signal: request.app.signal
+        })
       } catch (err) {
         throw Boom.boomify(err, { message: 'Failed to replace config value' })
       }
@@ -100,7 +104,9 @@ exports.get = async (request, h) => {
 
   let config
   try {
-    config = await ipfs.config.get()
+    config = await ipfs.config.get({
+      signal: request.app.signal
+    })
   } catch (err) {
     throw Boom.boomify(err, { message: 'Failed to get config value' })
   }
@@ -115,7 +121,9 @@ exports.show = async (request, h) => {
 
   let config
   try {
-    config = await ipfs.config.get()
+    config = await ipfs.config.get({
+      signal: request.app.signal
+    })
   } catch (err) {
     throw Boom.boomify(err, { message: 'Failed to get config value' })
   }
@@ -157,7 +165,9 @@ exports.replace = {
     const { config } = request.pre.args
 
     try {
-      await ipfs.config.replace(config)
+      await ipfs.config.replace(config, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to save config' })
     }
@@ -193,7 +203,10 @@ exports.profiles = {
       const dryRun = request.query['dry-run']
 
       try {
-        const diff = await ipfs.config.profiles.apply(profile, { dryRun })
+        const diff = await ipfs.config.profiles.apply(profile, {
+          dryRun,
+          signal: request.app.signal
+        })
 
         return h.response({ OldCfg: diff.original, NewCfg: diff.updated })
       } catch (err) {
@@ -204,7 +217,9 @@ exports.profiles = {
   list: {
     handler: async function (request, h) {
       const { ipfs } = request.server.app
-      const list = await ipfs.config.profiles.list()
+      const list = await ipfs.config.profiles.list({
+        signal: request.app.signal
+      })
 
       return h.response(
         list.map(profile => ({

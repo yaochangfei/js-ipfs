@@ -91,7 +91,9 @@ exports.get = {
     const { key } = request.pre.args
 
     return streamResponse(request, h, () => pipe(
-      ipfs.get(key),
+      ipfs.get(key, {
+        signal: request.app.signal
+      }),
       async function * (source) {
         for await (const file of source) {
           const header = {
@@ -196,7 +198,8 @@ exports.add = {
           // at a time from a http request and we have to consume it completely
           // before we can read the next file
           fileImportConcurrency: 1,
-          blockWriteConcurrency: request.query['block-write-concurrency']
+          blockWriteConcurrency: request.query['block-write-concurrency'],
+          signal: request.app.signal
         })
       },
       map(file => {
@@ -295,7 +298,8 @@ exports.ls = {
     if (!stream) {
       try {
         const links = await all(ipfs.ls(key, {
-          recursive
+          recursive,
+          signal: request.app.signal
         }))
 
         return h.response({ Objects: [{ Hash: key, Links: links.map(mapLink) }] })
@@ -355,7 +359,8 @@ exports.refs = {
         format,
         edges,
         unique,
-        maxDepth
+        maxDepth,
+        signal: request.app.signal
       }),
       map(({ ref, err }) => ({ Ref: ref, Err: err })),
       ndjson.stringify

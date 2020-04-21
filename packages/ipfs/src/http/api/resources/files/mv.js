@@ -23,7 +23,8 @@ const mfsMv = {
       cidVersion,
       flush,
       hashAlg,
-      shardSplitThreshold
+      shardSplitThreshold,
+      signal: request.app.signal
     })
 
     await ipfs.files.mv.apply(null, args)

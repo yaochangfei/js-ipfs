@@ -28,13 +28,16 @@ exports.resolve = {
     if (!stream) {
       const value = await last(ipfs.name.resolve(arg, {
         nocache,
-        recursive
+        recursive,
+        signal: request.app.signal
       }))
       return h.response({ Path: value })
     }
 
     return streamResponse(request, h, () => pipe(
-      ipfs.name.resolve(arg, request.query),
+      ipfs.name.resolve(arg, request.query, {
+        signal: request.app.signal
+      }),
       map(value => ({ Path: value })),
       ndjson.stringify
     ))
@@ -68,7 +71,8 @@ exports.publish = {
       lifetime,
       ttl,
       key,
-      allowOffline
+      allowOffline,
+      signal: request.app.signal
     })
 
     return h.response({
@@ -83,7 +87,9 @@ exports.pubsub = {
     async handler (request, h) {
       const { ipfs } = request.server.app
 
-      const res = await ipfs.name.pubsub.state()
+      const res = await ipfs.name.pubsub.state({
+        signal: request.app.signal
+      })
 
       return h.response({
         Enabled: res.enabled
@@ -94,7 +100,9 @@ exports.pubsub = {
     async handler (request, h) {
       const { ipfs } = request.server.app
 
-      const res = await ipfs.name.pubsub.subs()
+      const res = await ipfs.name.pubsub.subs({
+        signal: request.app.signal
+      })
 
       return h.response({
         Strings: res
@@ -111,7 +119,9 @@ exports.pubsub = {
       const { ipfs } = request.server.app
       const { arg } = request.query
 
-      const res = await ipfs.name.pubsub.cancel(arg)
+      const res = await ipfs.name.pubsub.cancel(arg, {
+        signal: request.app.signal
+      })
 
       return h.response({
         Canceled: res.canceled

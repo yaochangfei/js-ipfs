@@ -97,7 +97,8 @@ exports.put = {
       block = await ipfs.block.put(data, {
         mhtype: request.query.mhtype,
         format: request.query.format,
-        version: request.query.version && parseInt(request.query.version)
+        version: request.query.version && parseInt(request.query.version),
+        signal: request.app.signal
       })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to put block' })

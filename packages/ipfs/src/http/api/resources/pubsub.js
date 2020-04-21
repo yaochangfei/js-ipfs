@@ -40,7 +40,8 @@ exports.subscribe = {
     request.events.once('finish', unsubscribe)
 
     await ipfs.pubsub.subscribe(topic, handler, {
-      discover: discover
+      discover: discover,
+      signal: request.app.signal
     })
 
     return h.response(res)
@@ -69,7 +70,9 @@ exports.publish = {
     }
 
     try {
-      await ipfs.pubsub.publish(topic, buf)
+      await ipfs.pubsub.publish(topic, buf, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: `Failed to publish to topic ${topic}` })
     }
@@ -84,7 +87,9 @@ exports.ls = {
 
     let subscriptions
     try {
-      subscriptions = await ipfs.pubsub.ls()
+      subscriptions = await ipfs.pubsub.ls({
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to list subscriptions' })
     }
@@ -100,7 +105,9 @@ exports.peers = {
 
     let peers
     try {
-      peers = await ipfs.pubsub.peers(topic)
+      peers = await ipfs.pubsub.peers(topic, {
+        signal: request.app.signal
+      })
     } catch (err) {
       const message = topic
         ? `Failed to find peers subscribed to ${topic}: ${err}`

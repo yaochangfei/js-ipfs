@@ -18,7 +18,8 @@ const mfsStat = {
     const stats = await ipfs.files.stat(arg, {
       hash,
       size,
-      withLocal
+      withLocal,
+      signal: request.app.signal
     })
 
     const output = {

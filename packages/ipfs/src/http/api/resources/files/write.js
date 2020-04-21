@@ -52,7 +52,8 @@ const mfsWrite = {
           flush,
           shardSplitThreshold,
           mode: entry.mode,
-          mtime: entry.mtime
+          mtime: entry.mtime,
+          signal: request.app.signal
         })
 
         // if we didn't read the whole body, read it and discard the remainder

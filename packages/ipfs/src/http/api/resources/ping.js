@@ -28,7 +28,8 @@ module.exports = {
 
     return streamResponse(request, h, () => pipe(
       ipfs.ping(peerId, {
-        count
+        count,
+        signal: request.app.signal
       }),
       map(pong => ({ Success: pong.success, Time: pong.time, Text: pong.text })),
       ndjson.stringify

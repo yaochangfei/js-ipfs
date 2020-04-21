@@ -16,7 +16,8 @@ const mfsRead = {
 
     return streamResponse(request, h, () => ipfs.files.read(arg, {
       offset,
-      length
+      length,
+      signal: request.app.signal
     }))
   },
   options: {

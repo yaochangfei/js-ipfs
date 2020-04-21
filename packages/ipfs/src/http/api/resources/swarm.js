@@ -27,7 +27,8 @@ exports.peers = {
     const { ipfs } = request.server.app
 
     const peers = await ipfs.swarm.peers({
-      verbose
+      verbose,
+      signal: request.app.signal
     })
 
     return h.response({
@@ -55,7 +56,9 @@ exports.peers = {
 exports.addrs = {
   async handler (request, h) {
     const { ipfs } = request.server.app
-    const peers = await ipfs.swarm.addrs()
+    const peers = await ipfs.swarm.addrs({
+      signal: request.app.signal
+    })
 
     return h.response({
       Addrs: peers.reduce((addrs, peer) => {
@@ -69,7 +72,9 @@ exports.addrs = {
 exports.localAddrs = {
   async handler (request, h) {
     const { ipfs } = request.server.app
-    const addrs = await ipfs.swarm.localAddrs()
+    const addrs = await ipfs.swarm.localAddrs({
+      signal: request.app.signal
+    })
 
     return h.response({
       Strings: addrs.map((addr) => addr.toString())
@@ -86,7 +91,9 @@ exports.connect = {
     const { addr } = request.pre.args
     const { ipfs } = request.server.app
 
-    await ipfs.swarm.connect(addr)
+    await ipfs.swarm.connect(addr, {
+      signal: request.app.signal
+    })
 
     return h.response({
       Strings: [`connect ${addr} success`]
@@ -103,7 +110,9 @@ exports.disconnect = {
     const { addr } = request.pre.args
     const { ipfs } = request.server.app
 
-    await ipfs.swarm.disconnect(addr)
+    await ipfs.swarm.disconnect(addr, {
+      signal: request.app.signal
+    })
 
     return h.response({
       Strings: [`disconnect ${addr} success`]

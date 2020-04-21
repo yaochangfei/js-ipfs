@@ -27,7 +27,8 @@ const mfsMkdir = {
       hashAlg,
       cidVersion,
       flush,
-      shardSplitThreshold
+      shardSplitThreshold,
+      signal: request.app.signal
     })
 
     return h.response()

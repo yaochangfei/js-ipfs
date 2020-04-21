@@ -147,7 +147,9 @@ exports.get = {
     let result
 
     try {
-      result = await ipfs.dag.get(key, path)
+      result = await ipfs.dag.get(key, path, {
+        signal: request.app.signal
+      })
     } catch (err) {
       throw Boom.badRequest(err)
     }
@@ -246,6 +248,7 @@ exports.put = {
       cid = await ipfs.dag.put(node, {
         format: format,
         hashAlg: hashAlg,
+        signal: request.app.signal,
         pin: request.query.pin
       })
     } catch (err) {
@@ -284,7 +287,9 @@ exports.resolve = {
       let lastRemainderPath = path
 
       if (path) {
-        for await (const { value, remainderPath } of ipfs.dag.resolve(lastCid, path)) {
+        for await (const { value, remainderPath } of ipfs.dag.resolve(lastCid, path, {
+          signal: request.app.signal
+        })) {
           if (!CID.isCID(value)) {
             break
           }

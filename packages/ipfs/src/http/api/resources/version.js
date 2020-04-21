@@ -2,7 +2,9 @@
 
 module.exports = async (request, h) => {
   const { ipfs } = request.server.app
-  const version = await ipfs.version()
+  const version = await ipfs.version({
+    signal: request.app.signal
+  })
 
   return h.response({
     Version: version.version,

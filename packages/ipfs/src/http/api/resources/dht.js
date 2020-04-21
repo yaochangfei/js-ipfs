@@ -21,7 +21,9 @@ exports.findPeer = {
     let res
 
     try {
-      res = await ipfs.dht.findPeer(new CID(arg))
+      res = await ipfs.dht.findPeer(new CID(arg), {
+        signal: request.app.signal
+      })
     } catch (err) {
       if (err.code === 'ERR_LOOKUP_FAILED') {
         throw Boom.notFound(err.toString())
@@ -53,7 +55,8 @@ exports.findProvs = {
     const { arg } = request.query
 
     const res = await all(ipfs.dht.findProvs(new CID(arg), {
-      numProviders: request.query['num-providers']
+      numProviders: request.query['num-providers'],
+      signal: request.app.signal
     }))
 
     return h.response({
@@ -77,7 +80,9 @@ exports.get = {
     const ipfs = request.server.app.ipfs
     const { arg } = request.query
 
-    const res = await ipfs.dht.get(Buffer.from(arg))
+    const res = await ipfs.dht.get(Buffer.from(arg), {
+      signal: request.app.signal
+    })
 
     return h.response({
       Extra: res.toString(),
@@ -103,7 +108,9 @@ exports.provide = {
       throw Boom.boomify(err, { message: err.toString() })
     }
 
-    await ipfs.dht.provide(cid)
+    await ipfs.dht.provide(cid, {
+      signal: request.app.signal
+    })
 
     return h.response()
   }
@@ -125,7 +132,9 @@ exports.put = {
     const ipfs = request.server.app.ipfs
     const { key, value } = request.pre.args
 
-    await ipfs.dht.put(Buffer.from(key), Buffer.from(value))
+    await ipfs.dht.put(Buffer.from(key), Buffer.from(value), {
+      signal: request.app.signal
+    })
 
     return h.response()
   }
@@ -143,7 +152,9 @@ exports.query = {
 
     const response = toStream.readable(
       pipe(
-        ipfs.dht.query(arg),
+        ipfs.dht.query(arg, {
+          signal: request.app.signal
+        }),
         map(({ id }) => ({ ID: id.toString() })),
         ndjson.stringify
       )

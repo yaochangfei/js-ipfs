@@ -16,7 +16,8 @@ const mfsRm = {
 
     const args = [...arg, {
       recursive,
-      shardSplitThreshold
+      shardSplitThreshold,
+      signal: request.app.signal
     }]
 
     await ipfs.files.rm.apply(null, args)

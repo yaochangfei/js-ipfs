@@ -20,7 +20,8 @@ const mfsChmod = {
       recursive,
       hashAlg,
       flush,
-      shardSplitThreshold
+      shardSplitThreshold,
+      signal: request.app.signal
     })
 
     return h.response()

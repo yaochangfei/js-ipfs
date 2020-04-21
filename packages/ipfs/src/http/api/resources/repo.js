@@ -18,7 +18,9 @@ exports.gc = {
     const { ipfs } = request.server.app
 
     return streamResponse(request, h, () => pipe(
-      ipfs.repo.gc(),
+      ipfs.repo.gc({
+        signal: request.app.signal
+      }),
       filter(r => !r.err || streamErrors),
       map(r => ({
         Error: r.err && r.err.message,
@@ -31,7 +33,9 @@ exports.gc = {
 
 exports.version = async (request, h) => {
   const { ipfs } = request.server.app
-  const version = await ipfs.repo.version()
+  const version = await ipfs.repo.version({
+    signal: request.app.signal
+  })
   return h.response({
     Version: version
   })
@@ -39,7 +43,9 @@ exports.version = async (request, h) => {
 
 exports.stat = async (request, h) => {
   const { ipfs } = request.server.app
-  const stat = await ipfs.repo.stat()
+  const stat = await ipfs.repo.stat({
+    signal: request.app.signal
+  })
 
   return h.response({
     NumObjects: stat.numObjects,

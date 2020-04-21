@@ -61,7 +61,8 @@ exports.ls = {
     if (!request.query.stream) {
       const res = await pipe(
         ipfs.pin.ls(path, {
-          type
+          type,
+          signal: request.app.signal
         }),
         reduce((res, { type, cid }) => {
           res.Keys[cidToString(cid, { base: request.query['cid-base'] })] = { Type: type }
@@ -96,7 +97,8 @@ exports.add = {
     let result
     try {
       result = await ipfs.pin.add(path, {
-        recursive
+        recursive,
+        signal: request.app.signal
       })
     } catch (err) {
       if (err.message.includes('already pinned recursively')) {
@@ -127,7 +129,8 @@ exports.rm = {
     let result
     try {
       result = await ipfs.pin.rm(path, {
-        recursive
+        recursive,
+        signal: request.app.signal
       })
     } catch (err) {
       throw Boom.boomify(err, { message: 'Failed to remove pin' })
